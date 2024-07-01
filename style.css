@@ -13,6 +13,7 @@ body {
    background: #091921;
    color: white;
    overflow: hidden;
+   font-family: 'Roboto', sans-serif;
 }
 
 .container {
@@ -55,10 +56,8 @@ body {
 }
 
 .icon div {
-   margin-top: 0px;
+   margin-top: 5px;
    font-size: 14px;
-   background-color: whitesmoke;
-   border-radius: 10%;
 }
 
 .icon:hover {
@@ -66,7 +65,6 @@ body {
 }
 
 .clock-container {
-   font-family: 'Roboto', sans-serif;
    display: flex;
    flex-direction: column;
    justify-content: center;
@@ -99,6 +97,17 @@ body {
    background: #002700;
    border-radius: 50%;
    z-index: 10000;
+}
+
+.fullscreen-circle {
+   position: absolute;
+   width: 20px; /* Adjust size as needed */
+   height: 20px; /* Adjust size as needed */
+   background-color: white;
+   border-radius: 50%;
+   cursor: pointer;
+   bottom: 10px; /* Adjust position as needed */
+   right: 10px; /* Adjust position as needed */
 }
 
 .clock .hour,

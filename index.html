@@ -49,64 +49,63 @@
     <meta property="og:image:height" content="630">
 
     <meta property="og:type" content="page">
-
 </head>
 
 <body>
     <div class="container">
         <div class="icons">
             <div class="icon">
-                <a href="https://www.google.co.in/">
+                <a href="https://www.google.co.in/" target="_self">
                     <img src="assets/icon/img1.jpg.avif" alt="App 1">
-                    <div>Browser</div>
+                    <div style="color: white;">Browser</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://drive.google.com/drive/">
+                <a href="https://drive.google.com/drive/" target="_self">
                     <img src="assets/icon/img2.jpg.avif" alt="App 2">
-                    <div>Files</div>
+                    <div style="color: white;">Files</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://www.youtube.com">
+                <a href="https://www.youtube.com" target="_self">
                     <img src="assets/icon/img3.jpg.avif" alt="App 3">
-                    <div>YouTube</div>
+                    <div style="color: white;">YouTube</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://www.instagram.com">
+                <a href="https://www.instagram.com" target="_self">
                     <img src="assets/icon/img4.jpg.avif" alt="App 4">
-                    <div>Instagram</div>
+                    <div style="color: white;">Instagram</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://www.whatsapp.com">
+                <a href="https://www.whatsapp.com" target="_self">
                     <img src="assets/icon/img5.jpg.avif" alt="App 5">
-                    <div>Whatsapp</div>
+                    <div style="color: white;">Whatsapp</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://fitmetric.onrender.com">
+                <a href="https://fitmetric.onrender.com" target="_self">
                     <img src="assets/icon/img6.png" alt="App 6">
-                    <div>FitMetric</div>
+                    <div style="color: white;">FitMetric</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="#link7">
+                <a href="#link7" target="_self">
                     <img src="assets/icon/img7.png" alt="App 7">
-                    <div>Camera</div>
+                    <div style="color: white;">Camera</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://iot-weather.vercel.app">
+                <a href="https://iot-weather.vercel.app" target="_self">
                     <img src="assets/icon/img8.jpg.avif" alt="App 8">
-                    <div>Sensor</div>
+                    <div style="color: white;">Sensor</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="#link9">
+                <a href="#link9" target="_self">
                     <img src="assets/icon/img9.jpg.avif" alt="App 9">
-                    <div>Control</div>
+                    <div style="color: white;">Control</div>
                 </a>
             </div>
         </div>
@@ -121,6 +120,7 @@
                 <div class="sec">
                     <div class="sc" id="sc"></div>
                 </div>
+                <div class="fullscreen-circle" id="fullscreen-circle"></div>
             </div>
             <div class="datetime">
                 <div id="time"></div>
@@ -129,14 +129,14 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        const deg = 6;
+    <script>
         const hr = document.querySelector('#hr');
         const mn = document.querySelector('#mn');
         const sc = document.querySelector('#sc');
         const time = document.querySelector('#time');
         const date = document.querySelector('#date');
         const day = document.querySelector('#day');
+        const fullscreenCircle = document.getElementById('fullscreen-circle');
 
         setInterval(() => {
             let now = new Date();
@@ -157,6 +157,24 @@
             date.textContent = `${monthNames[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
             day.textContent = dayNames[now.getDay()];
         }, 1000);
+
+        fullscreenCircle.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        });
+
+        // Open links in fullscreen
+        const icons = document.querySelectorAll('.icon a');
+        icons.forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = icon.getAttribute('href');
+                window.open(href, '_self', 'fullscreen=yes');
+            });
+        });
     </script>
 </body>
 
