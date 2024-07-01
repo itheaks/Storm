@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Charset -->
+    <meta charset="utf-8">
+
+    <!-- Style Sheets -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Title -->
+    <title>Analog clock</title>
+    <!-- coded by U7P4L 1N -->
+    <!-- Description -->
+    <meta name="description" content="Storm - Interface">
+
+    <!-- Author -->
+    <meta name="author" content="Amit Kumar Singh">
+
+    <!-- Icon -->
+    <link rel="icon" type="image/png" href="logo.ico">
+
+    <!-- Apple touch icon -->
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#63d7a5">
+    <meta name="msapplication-TileColor" content="#63d7a5">
+    <meta name="msapplication-navbutton-color" content="#63d7a5">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#63d7a5">
+
+    <!-- Url -->
+    <meta property="og:url" content="https://amitkumarsingh.xyz/">
+    <!-- coded by U7P4L 1N -->
+    <!-- Title -->
+    <meta property="og:title" content="Storm">
+
+    <!-- Description -->
+    <meta property="og:description" content="Smart Technology Optimized for Residential Management.">
+
+    <!-- Icon -->
+    <meta property="og:image" content="">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta property="og:type" content="page">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="icons">
+            <div class="icon">
+                <a href="#link1">
+                    <img src="path/to/image1.png" alt="App 1">
+                    <div>App 1</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link2">
+                    <img src="path/to/image2.png" alt="App 2">
+                    <div>App 2</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link3">
+                    <img src="path/to/image3.png" alt="App 3">
+                    <div>App 3</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link4">
+                    <img src="path/to/image4.png" alt="App 4">
+                    <div>App 4</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link5">
+                    <img src="path/to/image5.png" alt="App 5">
+                    <div>App 5</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link6">
+                    <img src="path/to/image6.png" alt="App 6">
+                    <div>App 6</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link7">
+                    <img src="path/to/image7.png" alt="App 7">
+                    <div>App 7</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link8">
+                    <img src="path/to/image8.png" alt="App 8">
+                    <div>App 8</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link9">
+                    <img src="path/to/image9.png" alt="App 9">
+                    <div>App 9</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="#link10">
+                    <img src="path/to/image10.png" alt="App 10">
+                    <div>App 10</div>
+                </a>
+            </div>
+        </div>
+        <div class="clock-container">
+            <div class="clock">
+                <div class="hour">
+                    <div class="hr" id="hr"></div>
+                </div>
+                <div class="min">
+                    <div class="mn" id="mn"></div>
+                </div>
+                <div class="sec">
+                    <div class="sc" id="sc"></div>
+                </div>
+            </div>
+            <div class="datetime">
+                <div id="time"></div>
+                <div id="date"></div>
+                <div id="day"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const deg = 6;
+        const hr = document.querySelector('#hr');
+        const mn = document.querySelector('#mn');
+        const sc = document.querySelector('#sc');
+        const time = document.querySelector('#time');
+        const date = document.querySelector('#date');
+        const day = document.querySelector('#day');
+
+        setInterval(() => {
+            let now = new Date();
+
+            let hh = now.getHours();
+            let mm = now.getMinutes();
+            let ss = now.getSeconds();
+            let ms = now.getMilliseconds();
+
+            let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            hr.style.transform = `rotateZ(${(hh * 30) + (mm / 2)}deg)`;
+            mn.style.transform = `rotateZ(${(mm * 6) + (ss / 10)}deg)`;
+            sc.style.transform = `rotateZ(${(ss * 6) + (ms / 1000 * 6)}deg)`;
+
+            time.textContent = now.toLocaleTimeString();
+            date.textContent = `${monthNames[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+            day.textContent = dayNames[now.getDay()];
+        }, 1000);
+    </script>
+</body>
+
+</html>
