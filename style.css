@@ -12,7 +12,7 @@ body {
    height: 100vh;
    background: #091921;
    color: white;
-   overflow: hidden; /* Prevent scrolling */
+   overflow: hidden;
 }
 
 .container {
@@ -48,15 +48,17 @@ body {
 }
 
 .icon img {
-   width: 100px;
-   height: 100px;
+   width: 90px;
+   height: 80px;
    object-fit: cover;
    border-radius: 10px;
 }
 
 .icon div {
-   margin-top: 5px;
+   margin-top: 0px;
    font-size: 14px;
+   background-color: whitesmoke;
+   border-radius: 10%;
 }
 
 .icon:hover {
@@ -64,6 +66,7 @@ body {
 }
 
 .clock-container {
+   font-family: 'Roboto', sans-serif;
    display: flex;
    flex-direction: column;
    justify-content: center;
