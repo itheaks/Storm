@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motor Control</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .direction-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px;
+  }
+
+  .direction-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .direction-button {
+    background-color: #3498db;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    flex: 1;
+    max-width: 50%;
+  }
+
+  .direction-button.full-width {
+    max-width: 100%;
+  }
+
+  .direction-button:hover {
+    background-color: #2980b9;
+  }
+
+  #speedControl {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  #speedSlider {
+    width: 300px;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      let speedSlider = document.getElementById('speedSlider');
+
+      document.querySelectorAll('.direction-button').forEach(button => {
+          button.addEventListener('mousedown', function() {
+              move(button.getAttribute('data-direction'), speedSlider.value);
+          });
+
+          button.addEventListener('mouseup', function() {
+              stop();
+          });
+      });
+
+      function move(direction, speed) {
+          fetch(`/move`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `direction=${direction}&speed=${speed}`
+          });
+      }
+
+      function stop() {
+          fetch('/move', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `direction=stop`
+          });
+      }
+  });
+</script>
+</head>
+<body>
+  <div class="direction-container">
+    <h1>Motor Control</h1>
+    <div class="direction-row">
+      <button class="direction-button full-width" data-direction="forward">Forward</button>
+    </div>
+    <div class="direction-row">
+      <button class="direction-button" data-direction="left">Left</button>
+      <button class="direction-button" data-direction="right">Right</button>
+    </div>
+    <div class="direction-row">
+      <button class="direction-button full-width" data-direction="backward">Backward</button>
+    </div>
+    <div id="speedControl">
+      <input type="range" min="0" max="1023" value="716" id="speedSlider">
+    </div>
+  </div>
+</body>
+</html>

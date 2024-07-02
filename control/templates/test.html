@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motor Control</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px; /* Add padding to create space */
+  }
+
+  .direction-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px; /* Add margin for spacing between containers */
+  }
+
+  .direction-row {
+    display: flex;
+    gap: 20px;
+    width: 100%; /* Ensures the row takes full width */
+  }
+
+  .direction-button {
+    background-color: #3498db;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    flex: 1; /* Each button takes equal space */
+    max-width: 50%; /* Maximum width for Left and Right buttons */
+  }
+
+  .direction-button.full-width {
+    max-width: 100%; /* Maximum width for Forward and Backward buttons */
+  }
+  
+  .direction-button.full-width2 {
+    max-width: 200%;
+  }
+
+  .direction-button:hover {
+    background-color: #2980b9;
+  }
+
+  .arrow {
+    display: inline-block;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    padding: 3px;
+    margin-left: 5px;
+    transform: rotate(-45deg);
+  }
+
+  .up {
+    margin-top: -2px;
+  }
+
+  .down {
+    margin-top: 2px;
+  }
+
+  #speedControl {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  #speedSlider {
+    width: 300px;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      let speed = 0.7 * 1023;
+      const speedSlider = document.getElementById('speedSlider');
+
+      document.addEventListener('keydown', function(event) {
+          let direction;
+          switch(event.key) {
+              case 'ArrowUp':
+                  direction = 'forward';
+                  break;
+              case 'ArrowDown':
+                  direction = 'backward';
+                  break;
+              case 'ArrowLeft':
+                  direction = 'left';
+                  break;
+              case 'ArrowRight':
+                  direction = 'right';
+                  break;
+              case ' ':
+                  direction = 'stop';
+                  break;
+              case 'Shift':
+                  speed = Math.min(1023, speed + 51); // Increase speed by 5%
+                  adjustSpeed(speed);
+                  break;
+              case 'Tab':
+                  speed = Math.max(0, speed - 51); // Decrease speed by 5%
+                  adjustSpeed(speed);
+                  event.preventDefault();
+                  break;
+              default:
+                  return;
+          }
+          fetch('/move', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `direction=${direction}`
+          });
+      });
+
+      document.addEventListener('keyup', function(event) {
+          let direction;
+          switch(event.key) {
+              case 'ArrowUp':
+              case 'ArrowDown':
+              case 'ArrowLeft':
+              case 'ArrowRight':
+                  direction = 'stop';
+                  break;
+              default:
+                  return;
+          }
+          fetch('/move', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `direction=stop`
+          });
+      });
+
+      speedSlider.addEventListener('input', function() {
+          adjustSpeed(this.value);
+      });
+
+      speedSlider.value = speed; // Initialize speed slider
+
+      function adjustSpeed(value) {
+          fetch('/speed', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `action=set_speed&value=${value}`
+          });
+      }
+  });
+
+  function move(direction) {
+      fetch('/move', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `direction=${direction}`
+      });
+  }
+</script>
+</head>
+<body>
+  <div class="direction-container">
+    <h1>Motor Control</h1>
+    <div class="direction-row">
+      <button class="direction-button up full-width" onclick="move('forward')">Forward</button>
+    </div>
+    <div class="direction-row">
+      <button class="direction-button left" onclick="move('left')">Left</button>
+      <button class="direction-button right" onclick="move('right')">Right</button>
+    </div>
+    <div class="direction-row">
+      <button class="direction-button down full-width" onclick="move('backward')">Backward</button>
+    </div>
+    <div id="speedControl">
+      <input type="range" min="0" max="1023" value="716" id="speedSlider">
+    </div>
+  </div>
+</body>
+</html>
