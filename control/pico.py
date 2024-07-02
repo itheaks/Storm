@@ -1,25 +1,20 @@
 import network
 import socket
-from machine import Pin, PWM
+from machine import Pin
 import time
 
 # Define motor pins
-motor1_forward = Pin(16, Pin.OUT)
+motor1_forward = Pin(18, Pin.OUT)
 motor1_backward = Pin(17, Pin.OUT)
-motor2_forward = Pin(18, Pin.OUT)
-motor2_backward = Pin(19, Pin.OUT)
+motor2_forward = Pin(19, Pin.OUT)
+motor2_backward = Pin(20, Pin.OUT)
 
 # Define LED pins
-led_forward = Pin(10, Pin.OUT)
-led_backward = Pin(11, Pin.OUT)
-led_left = Pin(12, Pin.OUT)
-led_right = Pin(13, Pin.OUT)
-
-# Setup PWM for motor speed control
-pwm_motor1 = PWM(motor1_forward)
-pwm_motor2 = PWM(motor2_forward)
-pwm_motor1.freq(1000)
-pwm_motor2.freq(1000)
+led_forward = Pin(11, Pin.OUT)
+led_backward = Pin(12, Pin.OUT)
+led_left = Pin(13, Pin.OUT)
+led_right = Pin(14, Pin.OUT)
+led_default = Pin(15, Pin.OUT)
 
 def stop():
     motor1_forward.off()
@@ -30,30 +25,35 @@ def stop():
     led_backward.off()
     led_left.off()
     led_right.off()
+    led_default.on()
 
-def move_forward(speed):
+def move_forward():
     stop()
-    pwm_motor1.duty_u16(int(speed))
-    pwm_motor2.duty_u16(int(speed))
+    motor1_forward.on()
+    motor2_forward.on()
     led_forward.on()
+    led_default.off()
 
-def move_backward(speed):
+def move_backward():
     stop()
     motor1_backward.on()
     motor2_backward.on()
     led_backward.on()
+    led_default.off()
 
-def turn_left(speed):
+def turn_left():
     stop()
     motor1_backward.on()
-    pwm_motor2.duty_u16(int(speed))
+    motor2_forward.on()  # Add this line to make the turn left effective
     led_left.on()
+    led_default.off()
 
-def turn_right(speed):
+def turn_right():
     stop()
-    pwm_motor1.duty_u16(int(speed))
-    motor2_backward.on()
+    motor1_forward.on()
+    motor2_backward.on()  # Add this line to make the turn right effective
     led_right.on()
+    led_default.off()
 
 # Connect to Wi-Fi
 ssid = 'Project'
@@ -94,23 +94,16 @@ while True:
         print('Client connected from', addr)
         request = cl.recv(1024).decode()
         request_path = request.split(' ')[1]
-        query_params = request_path.split('?')
-        path = query_params[0]
-        speed = 716  # Default speed
-        if len(query_params) > 1:
-            params = query_params[1].split('&')
-            for param in params:
-                if param.startswith('speed='):
-                    speed = int(param.split('=')[1])
+        path = request_path.split('?')[0]
 
         if '/forward' in path:
-            move_forward(speed)
+            move_forward()
         elif '/backward' in path:
-            move_backward(speed)
+            move_backward()
         elif '/left' in path:
-            turn_left(speed)
+            turn_left()
         elif '/right' in path:
-            turn_right(speed)
+            turn_right()
         elif '/stop' in path:
             stop()
         else:
@@ -122,3 +115,4 @@ while True:
         print('Error:', e)
     finally:
         cl.close()
+
