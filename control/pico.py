@@ -4,8 +4,8 @@ from machine import Pin, PWM
 import time
 
 # Define motor pins
-motor1_forward = Pin(18, Pin.OUT)
-motor1_backward = Pin(17, Pin.OUT)
+motor1_forward = Pin(17, Pin.OUT)
+motor1_backward = Pin(18, Pin.OUT)
 motor2_forward = Pin(19, Pin.OUT)
 motor2_backward = Pin(20, Pin.OUT)
 
@@ -13,12 +13,16 @@ motor2_backward = Pin(20, Pin.OUT)
 motor1_enable = PWM(Pin(16), freq=1000)  # Motor 1 speed control
 motor2_enable = PWM(Pin(21), freq=1000)  # Motor 2 speed control
 
+# Define servo pins
+servo1 = PWM(Pin(0), freq=50)
+servo2 = PWM(Pin(2), freq=50)
+
 # Define LED pins
 led_forward = Pin(11, Pin.OUT)
 led_backward = Pin(12, Pin.OUT)
 led_left = Pin(13, Pin.OUT)
 led_right = Pin(14, Pin.OUT)
-led_default = Pin(15, Pin.OUT)
+led_default = Pin(10, Pin.OUT)
 
 def set_speed(speed):
     duty_cycle = int((speed / 100) * 65535)  # PWM duty cycle as a 16-bit value
@@ -38,15 +42,15 @@ def stop():
 
 def move_forward():
     stop()
-    motor1_forward.on()
-    motor2_forward.on()
+    motor1_backward.on()
+    motor2_backward.on()
     led_forward.on()
     led_default.off()
 
 def move_backward():
     stop()
-    motor1_backward.on()
-    motor2_backward.on()
+    motor1_forward.on()
+    motor2_forward.on()
     led_backward.on()
     led_default.off()
 
@@ -63,6 +67,12 @@ def turn_right():
     motor2_backward.on()
     led_right.on()
     led_default.off()
+
+def set_servo_angle(servo, angle):
+    min_val = 2500
+    max_val = 7500
+    duty = int(min_val + (max_val - min_val) * (angle / 180.0))
+    servo.duty_u16(duty)
 
 # Connect to Wi-Fi
 ssid = 'Project'
@@ -120,6 +130,12 @@ while True:
             turn_right()
         elif '/stop' in path:
             stop()
+        elif '/servo1' in path:
+            angle = int(query_params.get('angle', 90))  # Default angle to 90
+            set_servo_angle(servo1, angle)
+        elif '/servo2' in path:
+            angle = int(query_params.get('angle', 90))  # Default angle to 90
+            set_servo_angle(servo2, angle)
         else:
             print('Unknown command:', request_path)
 
@@ -129,4 +145,6 @@ while True:
         print('Error:', e)
     finally:
         cl.close()
+
+
 

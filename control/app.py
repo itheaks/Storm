@@ -21,5 +21,27 @@ def move():
         return str(e), 500
     return '', 204
 
+@app.route('/servo1', methods=['POST'])
+def servo1():
+    angle = request.form.get('angle', '90')  # Default angle to 90 if not provided
+    try:
+        response = requests.get(f"{ESP32_IP}/servo1?angle={angle}")
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Error: {e}")
+        return str(e), 500
+    return '', 204
+
+@app.route('/servo2', methods=['POST'])
+def servo2():
+    angle = request.form.get('angle', '90')  # Default angle to 90 if not provided
+    try:
+        response = requests.get(f"{ESP32_IP}/servo2?angle={angle}")
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Error: {e}")
+        return str(e), 500
+    return '', 204
+
 if __name__ == '__main__':
     app.run(debug=True)

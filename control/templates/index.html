@@ -61,10 +61,27 @@
   #speedSlider {
     width: 300px;
   }
+  
+  .servo-container {
+    margin-top: 20px;
+  }
+  
+  .servo-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+  }
+  
+  .servo-label {
+    margin-bottom: 10px;
+  }
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       let speedSlider = document.getElementById('speedSlider');
+      let servo1Slider = document.getElementById('servo1Slider');
+      let servo2Slider = document.getElementById('servo2Slider');
 
       document.querySelectorAll('.direction-button').forEach(button => {
           button.addEventListener('mousedown', function() {
@@ -95,6 +112,24 @@
               body: `direction=stop`
           });
       }
+      
+      servo1Slider.addEventListener('input', function() {
+          setServo('servo1', servo1Slider.value);
+      });
+      
+      servo2Slider.addEventListener('input', function() {
+          setServo('servo2', servo2Slider.value);
+      });
+
+      function setServo(servo, angle) {
+          fetch(`/${servo}`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `angle=${angle}`
+          });
+      }
   });
 </script>
 </head>
@@ -113,6 +148,17 @@
     </div>
     <div id="speedControl">
       <input type="range" min="10" max="100" value="50" id="speedSlider">
+    </div>
+    
+    <div class="servo-container">
+      <div class="servo-control">
+        <div class="servo-label">Servo 1 Control</div>
+        <input type="range" min="0" max="180" value="90" id="servo1Slider">
+      </div>
+      <div class="servo-control">
+        <div class="servo-label">Servo 2 Control</div>
+        <input type="range" min="0" max="180" value="90" id="servo2Slider">
+      </div>
     </div>
   </div>
 </body>
