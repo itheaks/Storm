@@ -12,7 +12,7 @@ def index():
 @app.route('/move', methods=['POST'])
 def move():
     direction = request.form.get('direction')
-    speed = request.form.get('speed', '716')  # Default speed if not provided
+    speed = request.form.get('speed', '50')  # Default speed to 50 if not provided
     try:
         response = requests.get(f"{ESP32_IP}/{direction}?speed={speed}")
         response.raise_for_status()

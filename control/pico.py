@@ -1,6 +1,6 @@
 import network
 import socket
-from machine import Pin
+from machine import Pin, PWM
 import time
 
 # Define motor pins
@@ -9,12 +9,21 @@ motor1_backward = Pin(17, Pin.OUT)
 motor2_forward = Pin(19, Pin.OUT)
 motor2_backward = Pin(20, Pin.OUT)
 
+# Define motor enable pins
+motor1_enable = PWM(Pin(16), freq=1000)  # Motor 1 speed control
+motor2_enable = PWM(Pin(21), freq=1000)  # Motor 2 speed control
+
 # Define LED pins
 led_forward = Pin(11, Pin.OUT)
 led_backward = Pin(12, Pin.OUT)
 led_left = Pin(13, Pin.OUT)
 led_right = Pin(14, Pin.OUT)
 led_default = Pin(15, Pin.OUT)
+
+def set_speed(speed):
+    duty_cycle = int((speed / 100) * 65535)  # PWM duty cycle as a 16-bit value
+    motor1_enable.duty_u16(duty_cycle)
+    motor2_enable.duty_u16(duty_cycle)
 
 def stop():
     motor1_forward.off()
@@ -44,14 +53,14 @@ def move_backward():
 def turn_left():
     stop()
     motor1_backward.on()
-    motor2_forward.on()  # Add this line to make the turn left effective
+    motor2_forward.on()
     led_left.on()
     led_default.off()
 
 def turn_right():
     stop()
     motor1_forward.on()
-    motor2_backward.on()  # Add this line to make the turn right effective
+    motor2_backward.on()
     led_right.on()
     led_default.off()
 
@@ -95,6 +104,11 @@ while True:
         request = cl.recv(1024).decode()
         request_path = request.split(' ')[1]
         path = request_path.split('?')[0]
+        params = request_path.split('?')[1] if '?' in request_path else ''
+        query_params = dict(x.split('=') for x in params.split('&')) if params else {}
+
+        speed = int(query_params.get('speed', 50))  # Default speed to 50
+        set_speed(speed)
 
         if '/forward' in path:
             move_forward()
