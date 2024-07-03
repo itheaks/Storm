@@ -7,13 +7,25 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: url('bgg.jpg') no-repeat center center fixed;
+    background-size: cover;
     height: 100vh;
     margin: 0;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1); /* White overlay with 90% opacity */
+    z-index: 1;
   }
 
   .direction-container {
@@ -22,6 +34,7 @@
     align-items: center;
     gap: 20px;
     margin: 20px;
+    z-index: 2; /* Ensure content is above the overlay */
   }
 
   .direction-row {
@@ -61,6 +74,14 @@
   #speedSlider {
     width: 300px;
   }
+
+  #servo1Slider {
+    width: 300px;
+  }
+
+  #servo2Slider {
+    width: 300px;
+  }
   
   .servo-container {
     margin-top: 20px;
@@ -75,6 +96,39 @@
   
   .servo-label {
     margin-bottom: 10px;
+    font-size: 21px;
+  }
+    /* Media query for screens 1024px wide or less */
+    @media (max-width: 1200px) {
+    body {
+      padding: 14px; /* 30% less than 20px */
+    }
+    .direction-container {
+      gap: 14px; /* 30% less than 20px */
+      margin: 14px; /* 30% less than 20px */
+    }
+    .direction-button {
+      font-size: 12.6px; /* 30% less than 18px */
+      padding: 10.5px 17.5px; /* 30% less than 15px 25px */
+    }
+    #speedControl {
+      margin-top: 14px; /* 30% less than 20px */
+    }
+    #speedSlider,
+    #servo1Slider,
+    #servo2Slider {
+      width: 210px; /* 30% less than 300px */
+    }
+    .servo-container {
+      margin-top: 14px; /* 30% less than 20px */
+    }
+    .servo-control {
+      margin: 7px; /* 30% less than 10px */
+    }
+    .servo-label {
+      margin-bottom: 7px; /* 30% less than 10px */
+      font-size: 14.7px; /* 30% less than 21px */
+    }
   }
 </style>
 <script>
@@ -134,8 +188,9 @@
 </script>
 </head>
 <body>
+  <div class="overlay"></div>
   <div class="direction-container">
-    <h1>Motor Control</h1>
+    <h1 style="color: white;">Control Me!!</h1>
     <div class="direction-row">
       <button class="direction-button full-width" data-direction="forward">Forward</button>
     </div>
@@ -152,11 +207,11 @@
     
     <div class="servo-container">
       <div class="servo-control">
-        <div class="servo-label">Servo 1 Control</div>
+        <div class="servo-label" style="color: white;">Servo 1 Control</div>
         <input type="range" min="0" max="180" value="90" id="servo1Slider">
       </div>
       <div class="servo-control">
-        <div class="servo-label">Servo 2 Control</div>
+        <div class="servo-label" style="color: white;">Servo 2 Control</div>
         <input type="range" min="0" max="180" value="90" id="servo2Slider">
       </div>
     </div>

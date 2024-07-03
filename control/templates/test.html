@@ -13,7 +13,7 @@
     align-items: center;
     height: 100vh;
     margin: 0;
-    padding: 20px; /* Add padding to create space */
+    padding: 20px;
   }
 
   .direction-container {
@@ -21,13 +21,13 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    margin: 20px; /* Add margin for spacing between containers */
+    margin: 20px;
   }
 
   .direction-row {
     display: flex;
     gap: 20px;
-    width: 100%; /* Ensures the row takes full width */
+    width: 100%;
   }
 
   .direction-button {
@@ -41,37 +41,16 @@
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
-    flex: 1; /* Each button takes equal space */
-    max-width: 50%; /* Maximum width for Left and Right buttons */
+    flex: 1;
+    max-width: 50%;
   }
 
   .direction-button.full-width {
-    max-width: 100%; /* Maximum width for Forward and Backward buttons */
-  }
-  
-  .direction-button.full-width2 {
-    max-width: 200%;
+    max-width: 100%;
   }
 
   .direction-button:hover {
     background-color: #2980b9;
-  }
-
-  .arrow {
-    display: inline-block;
-    border: solid #fff;
-    border-width: 0 3px 3px 0;
-    padding: 3px;
-    margin-left: 5px;
-    transform: rotate(-45deg);
-  }
-
-  .up {
-    margin-top: -2px;
-  }
-
-  .down {
-    margin-top: 2px;
   }
 
   #speedControl {
@@ -82,63 +61,49 @@
   #speedSlider {
     width: 300px;
   }
+  
+  .servo-container {
+    margin-top: 20px;
+  }
+  
+  .servo-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+  }
+  
+  .servo-label {
+    margin-bottom: 10px;
+  }
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      let speed = 0.7 * 1023;
-      const speedSlider = document.getElementById('speedSlider');
+      let speedSlider = document.getElementById('speedSlider');
+      let servo1Slider = document.getElementById('servo1Slider');
+      let servo2Slider = document.getElementById('servo2Slider');
 
-      document.addEventListener('keydown', function(event) {
-          let direction;
-          switch(event.key) {
-              case 'ArrowUp':
-                  direction = 'forward';
-                  break;
-              case 'ArrowDown':
-                  direction = 'backward';
-                  break;
-              case 'ArrowLeft':
-                  direction = 'left';
-                  break;
-              case 'ArrowRight':
-                  direction = 'right';
-                  break;
-              case ' ':
-                  direction = 'stop';
-                  break;
-              case 'Shift':
-                  speed = Math.min(1023, speed + 51); // Increase speed by 5%
-                  adjustSpeed(speed);
-                  break;
-              case 'Tab':
-                  speed = Math.max(0, speed - 51); // Decrease speed by 5%
-                  adjustSpeed(speed);
-                  event.preventDefault();
-                  break;
-              default:
-                  return;
-          }
-          fetch('/move', {
+      document.querySelectorAll('.direction-button').forEach(button => {
+          button.addEventListener('mousedown', function() {
+              move(button.getAttribute('data-direction'), speedSlider.value);
+          });
+
+          button.addEventListener('mouseup', function() {
+              stop();
+          });
+      });
+
+      function move(direction, speed) {
+          fetch(`/move`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/x-www-form-urlencoded',
               },
-              body: `direction=${direction}`
+              body: `direction=${direction}&speed=${speed}`
           });
-      });
+      }
 
-      document.addEventListener('keyup', function(event) {
-          let direction;
-          switch(event.key) {
-              case 'ArrowUp':
-              case 'ArrowDown':
-              case 'ArrowLeft':
-              case 'ArrowRight':
-                  direction = 'stop';
-                  break;
-              default:
-                  return;
-          }
+      function stop() {
           fetch('/move', {
               method: 'POST',
               headers: {
@@ -146,51 +111,54 @@
               },
               body: `direction=stop`
           });
+      }
+      
+      servo1Slider.addEventListener('input', function() {
+          setServo('servo1', servo1Slider.value);
+      });
+      
+      servo2Slider.addEventListener('input', function() {
+          setServo('servo2', servo2Slider.value);
       });
 
-      speedSlider.addEventListener('input', function() {
-          adjustSpeed(this.value);
-      });
-
-      speedSlider.value = speed; // Initialize speed slider
-
-      function adjustSpeed(value) {
-          fetch('/speed', {
+      function setServo(servo, angle) {
+          fetch(`/${servo}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/x-www-form-urlencoded',
               },
-              body: `action=set_speed&value=${value}`
+              body: `angle=${angle}`
           });
       }
   });
-
-  function move(direction) {
-      fetch('/move', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `direction=${direction}`
-      });
-  }
 </script>
 </head>
 <body>
   <div class="direction-container">
     <h1>Motor Control</h1>
     <div class="direction-row">
-      <button class="direction-button up full-width" onclick="move('forward')">Forward</button>
+      <button class="direction-button full-width" data-direction="forward">Forward</button>
     </div>
     <div class="direction-row">
-      <button class="direction-button left" onclick="move('left')">Left</button>
-      <button class="direction-button right" onclick="move('right')">Right</button>
+      <button class="direction-button" data-direction="left">Left</button>
+      <button class="direction-button" data-direction="right">Right</button>
     </div>
     <div class="direction-row">
-      <button class="direction-button down full-width" onclick="move('backward')">Backward</button>
+      <button class="direction-button full-width" data-direction="backward">Backward</button>
     </div>
     <div id="speedControl">
-      <input type="range" min="0" max="1023" value="716" id="speedSlider">
+      <input type="range" min="10" max="100" value="50" id="speedSlider">
+    </div>
+    
+    <div class="servo-container">
+      <div class="servo-control">
+        <div class="servo-label">Servo 1 Control</div>
+        <input type="range" min="0" max="180" value="90" id="servo1Slider">
+      </div>
+      <div class="servo-control">
+        <div class="servo-label">Servo 2 Control</div>
+        <input type="range" min="0" max="180" value="90" id="servo2Slider">
+      </div>
     </div>
   </div>
 </body>
